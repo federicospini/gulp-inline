@@ -78,32 +78,7 @@ var typeMap = {
       }
     },
     filter: function (el) {
-      var tag = el[0].tagName
-
-      switch (tag) {
-        case 'img':
-          var src = el.attr('src')
-          return /\.svg$/.test(src) && isLocal(src)
-          break
-        case 'object':
-          var src = el.attr('data')
-          return /\.svg$/.test(src) && isLocal(src)
-          break
-        case 'svg':
-          var children = el.children(),
-              child    = children.first(),
-              src      = child.attr('xlink:href')
-
-          // Return TRUE if element contains only one child element and
-          // that child element is a <use> element with xlink:href
-          // attribute which refers to some random ID (which according to
-          // HTML5 spec should contain at least one character and shouldn't
-          // contain spaces) in external SVG file
-          return children.length === 1
-            && child[0].tagName === 'use'
-            && /\.svg#\S+$/.test(src)
-          break
-      }
+      return isLocal(el.attr('src'))
     },
     getSrc: function (el) {
       var tag = el[0].tagName
@@ -119,7 +94,20 @@ var typeMap = {
           break
       }
     }
-  }
+  },
+
+  html: {
+    tag: 'link',
+    template: function (contents, el) {
+      return String(contents)
+    },
+    filter: function (el) {
+      return isLocal(el.attr('src'))
+    },
+    getSrc: function (el) {
+      return el.attr('src')
+    }
+  },
 }
 
 function inject ($, process, base, cb, opts, relative, ignoredFiles) {
