@@ -15,7 +15,7 @@ var fs = require('fs')
 
 var typeMap = {
   css: {
-    tag: 'link',
+    tag: 'link[rel!="import"]',
     template: function (contents, el) {
       var attribute = el.attr('media')
       attribute = attribute ? ' media="' + attribute + '" ' : ''
@@ -97,15 +97,15 @@ var typeMap = {
   },
 
   html: {
-    tag: 'link',
+    tag: 'link[rel="import"]',
     template: function (contents, el) {
       return String(contents)
     },
     filter: function (el) {
-      return isLocal(el.attr('src'))
+      return isLocal(el.attr('href'))
     },
     getSrc: function (el) {
-      return el.attr('src')
+      return el.attr('href')
     }
   },
 }
